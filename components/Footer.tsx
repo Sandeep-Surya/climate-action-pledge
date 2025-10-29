@@ -1,0 +1,112 @@
+import { Leaf, Mail, Github, Twitter, Linkedin } from 'lucide-react';
+
+export default function Footer() {
+  const currentYear = new Date().getFullYear();
+
+  return (
+    <footer className="bg-gray-900 text-gray-300 py-12 px-4">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+          {/* Brand */}
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <Leaf className="w-8 h-8 text-green-500" />
+              <span className="text-xl font-bold text-white">
+                Climate Action Pledge
+              </span>
+            </div>
+            <p className="text-sm text-gray-400 leading-relaxed">
+              Join thousands of Indians committed to creating a sustainable future through collective climate action.
+            </p>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h4 className="text-white font-semibold mb-4">Quick Links</h4>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <a href="#hero" className="hover:text-green-400 transition">
+                  Home
+                </a>
+              </li>
+              <li>
+                <a href="#pledge-form" className="hover:text-green-400 transition">
+                  Take the Pledge
+                </a>
+              </li>
+              <li>
+                <a href="#pledge-wall" className="hover:text-green-400 transition">
+                  Pledge Wall
+                </a>
+              </li>
+              <li>
+                <a href="#about" className="hover:text-green-400 transition">
+                  About Us
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact & Social */}
+          <div>
+            <h4 className="text-white font-semibold mb-4">Connect With Us</h4>
+            <div className="space-y-3">
+              <a
+                href="mailto:contact@climateactionpledge.in"
+                className="flex items-center gap-2 text-sm hover:text-green-400 transition"
+              >
+                <Mail className="w-4 h-4" />
+                contact@climateactionpledge.in
+              </a>
+              <div className="flex gap-4 pt-2">
+                <a
+                  href="#"
+                  className="hover:text-green-400 transition"
+                  aria-label="Twitter"
+                >
+                  <Twitter className="w-5 h-5" />
+                </a>
+                <a
+                  href="#"
+                  className="hover:text-green-400 transition"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin className="w-5 h-5" />
+                </a>
+                <a
+                  href="#"
+                  className="hover:text-green-400 transition"
+                  aria-label="GitHub"
+                >
+                  <Github className="w-5 h-5" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-sm text-gray-400">
+            © {currentYear} Climate Action Pledge. All rights reserved.
+          </p>
+          <div className="flex gap-6 text-sm">
+            <a href="#" className="hover:text-green-400 transition">
+              Privacy Policy
+            </a>
+            <a href="#" className="hover:text-green-400 transition">
+              Terms of Service
+            </a>
+          </div>
+        </div>
+
+        {/* Quote */}
+        <div className="mt-8 text-center">
+          <p className="text-sm italic text-gray-500">
+            &ldquo;Small pledges create big change — one click at a time.&rdquo;
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}
