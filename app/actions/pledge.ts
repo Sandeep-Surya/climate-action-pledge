@@ -5,8 +5,12 @@ import { addPledge, generatePledgeId, getAllPledges } from '@/lib/mockData';
 import { addPledgeToSheet, getPledgesFromSheet, initializeSheet } from '@/lib/googleSheets';
 
 export async function submitPledge(formData: PledgeFormData): Promise<Pledge> {
-  // Validate form data
-  if (!formData.name || !formData.email || !formData.mobile) {
+  // Sanitize and validate form data
+  const sanitizedName = formData.name.trim();
+  const sanitizedEmail = formData.email.trim();
+  const sanitizedMobile = formData.mobile.trim();
+  
+  if (!sanitizedName || !sanitizedEmail || !sanitizedMobile) {
     throw new Error('Required fields are missing');
   }
 
@@ -17,12 +21,12 @@ export async function submitPledge(formData: PledgeFormData): Promise<Pledge> {
   // Create pledge object
   const pledge: Pledge = {
     id: generatePledgeId(),
-    name: formData.name,
-    email: formData.email,
-    mobile: formData.mobile,
+    name: sanitizedName,
+    email: sanitizedEmail,
+    mobile: sanitizedMobile,
     state: formData.state,
     profile: formData.profile,
-    customProfile: formData.customProfile,
+    customProfile: formData.customProfile?.trim(),
     commitments: formData.commitments,
     rating: formData.rating,
     date: new Date().toISOString().split('T')[0],

@@ -61,7 +61,9 @@ export default function PledgeFormEnhanced({ onSuccess }: PledgeFormProps) {
 
   // Sanitization helpers
   const sanitizeName = (name: string): string => {
-    return name.trim().replace(/[<>]/g, '').slice(0, 100);
+    // Allow only letters, spaces, dots, apostrophes, and hyphens (for names like "Mary-Jane" or "O'Brien")
+    // Remove all other special characters during input
+    return name.replace(/[^a-zA-Z\s.'-]/g, '').slice(0, 100);
   };
 
   const sanitizeEmail = (email: string): string => {
@@ -76,7 +78,7 @@ export default function PledgeFormEnhanced({ onSuccess }: PledgeFormProps) {
     const newErrors: Record<string, string> = {};
 
     // Name validation
-    const sanitizedName = sanitizeName(formData.name);
+    const sanitizedName = sanitizeName(formData.name).trim();
     if (!sanitizedName) {
       newErrors.name = 'Name is required';
     } else if (sanitizedName.length < 2) {

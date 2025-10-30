@@ -92,7 +92,7 @@ const QuoteCarousel = memo(function QuoteCarousel({ quotes, isInView }: QuoteCar
               className="relative h-full"
             >
               {/* Artistic Background - Always on right side */}
-              <div className={`hidden md:block absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l ${getBackgroundGradient(currentQuote.color)} opacity-40 overflow-hidden`}>
+              <div className={`hidden md:block absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l ${getBackgroundGradient(currentQuote.color)} opacity-30 overflow-hidden pointer-events-none`}>
                 {/* Large Image as Background with animation */}
                 <motion.div 
                   className="absolute inset-0 flex items-center justify-center p-4"
@@ -100,11 +100,12 @@ const QuoteCarousel = memo(function QuoteCarousel({ quotes, isInView }: QuoteCar
                   animate={{ scale: 1.1 }}
                   transition={{ duration: 5, ease: 'easeInOut', repeat: Infinity, repeatType: 'reverse' }}
                 >
-                  <div className="relative w-full h-full opacity-50">
+                  <div className="relative w-full h-full opacity-60">
                     <img
                       src={currentQuote.image}
                       alt={currentQuote.author}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover rounded-l-3xl"
+                      loading="eager"
                     />
                   </div>
                 </motion.div>
@@ -122,12 +123,12 @@ const QuoteCarousel = memo(function QuoteCarousel({ quotes, isInView }: QuoteCar
                 </div>
               </div>
 
-              {/* Content */}
-              <div className="relative z-10 p-6 md:p-12 lg:p-16 h-full flex flex-col justify-center">
-                <blockquote className="text-sm md:text-lg lg:text-xl italic text-gray-800 mb-4 md:mb-6 leading-relaxed font-medium line-clamp-4">
-                  <span className="text-2xl md:text-4xl text-emerald-400 opacity-50">"</span>
+              {/* Content - Constrained to left 2/3 on desktop */}
+              <div className="relative z-10 p-6 md:p-8 lg:p-12 h-full flex flex-col justify-start md:justify-start pt-2 md:pt-4 md:max-w-[66%]">
+                <blockquote className="text-xs md:text-base lg:text-lg italic text-gray-800 mb-2 md:mb-4 leading-relaxed font-medium line-clamp-4">
+                  <span className="text-xl md:text-3xl text-emerald-400 opacity-50">"</span>
                   {currentQuote.text}
-                  <span className="text-2xl md:text-4xl text-emerald-400 opacity-50">"</span>
+                  <span className="text-xl md:text-3xl text-emerald-400 opacity-50">"</span>
                 </blockquote>
 
                 <div className="flex items-center gap-3 md:gap-4">
@@ -245,7 +246,7 @@ export default function WhySectionTabbed() {
       author: 'Michael Pollan',
       role: 'Food Writer & Activist',
       initials: 'MP',
-      image: '/images/quotes/michael-pollan.png',
+      image: '/images/quotes/Michael-Pollan.png',
       color: 'green',
     },
     {
@@ -263,7 +264,7 @@ export default function WhySectionTabbed() {
       author: 'David Attenborough',
       role: 'Naturalist & Broadcaster',
       initials: 'DA',
-      image: '/images/quotes/david-attenborough.png',
+      image: '/images/quotes/David-Attenborough.png',
       color: 'red',
     },
   ];
