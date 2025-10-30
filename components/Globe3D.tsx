@@ -69,6 +69,38 @@ export default function Globe3D({ pledges }: Globe3DProps) {
   const [dimensions, setDimensions] = useState({ width: 800, height: 800 });
   const [isMobile, setIsMobile] = useState(false);
 
+  // Diverse color palette for pledge sticks (vibrant and distinct colors)
+  const colorPalette = useMemo(() => [
+    '#10b981', // Emerald
+    '#3b82f6', // Blue
+    '#f59e0b', // Amber
+    '#ef4444', // Red
+    '#8b5cf6', // Violet
+    '#ec4899', // Pink
+    '#14b8a6', // Teal
+    '#f97316', // Orange
+    '#06b6d4', // Cyan
+    '#a855f7', // Purple
+    '#84cc16', // Lime
+    '#f43f5e', // Rose
+    '#6366f1', // Indigo
+    '#eab308', // Yellow
+    '#059669', // Emerald darker
+    '#2563eb', // Blue darker
+    '#d97706', // Amber darker
+    '#dc2626', // Red darker
+    '#7c3aed', // Violet darker
+    '#db2777', // Pink darker
+    '#0d9488', // Teal darker
+    '#ea580c', // Orange darker
+    '#0891b2', // Cyan darker
+    '#9333ea', // Purple darker
+    '#65a30d', // Lime darker
+    '#e11d48', // Rose darker
+    '#4f46e5', // Indigo darker
+    '#ca8a04', // Yellow darker
+  ], []);
+
   // Normalize state name to match coordinates
   const normalizeStateName = (state: string): string => {
     if (!state) return '';
@@ -112,17 +144,10 @@ export default function Globe3D({ pledges }: Globe3DProps) {
         // Check if mobile or tablet
         setIsMobile(windowWidth < 1024); // lg breakpoint
         
-        // Scale down the globe on smaller devices
-        let scaleFactor = 1;
-        if (windowWidth < 640) { // Mobile
-          scaleFactor = 0.7;
-        } else if (windowWidth < 1024) { // Tablet
-          scaleFactor = 0.8;
-        }
-        
+        // Use full container dimensions without scaling to avoid cropping
         setDimensions({ 
-          width: offsetWidth * scaleFactor, 
-          height: offsetHeight * scaleFactor 
+          width: offsetWidth, 
+          height: offsetHeight 
         });
       }
     };
@@ -151,7 +176,7 @@ export default function Globe3D({ pledges }: Globe3DProps) {
     // Generate single hex data per state
     const hexagons: HexData[] = [];
     
-    Object.entries(stateCounts).forEach(([state, count]) => {
+    Object.entries(stateCounts).forEach(([state, count], index) => {
       const coords = STATE_COORDINATES[state];
       
       if (!coords) {
@@ -167,19 +192,14 @@ export default function Globe3D({ pledges }: Globe3DProps) {
         altitude = MIN_HEIGHT + (normalized * (MAX_HEIGHT - MIN_HEIGHT));
       }
       
-      // Get color based on count
-      const getHexColor = (count: number): string => {
-        if (count >= 10) return '#059669'; // Dark green
-        if (count >= 5) return '#10b981';  // Emerald
-        if (count >= 2) return '#34d399';  // Light green
-        return '#6ee7b7';                  // Very light
-      };
+      // Assign a unique color to each state from the color palette
+      const uniqueColor = colorPalette[index % colorPalette.length];
       
       const hexData: HexData = {
         lat: coords.lat,
         lng: coords.lng,
         altitude,
-        color: getHexColor(count),
+        color: uniqueColor,
         state,
         count,
       };
@@ -189,17 +209,20 @@ export default function Globe3D({ pledges }: Globe3DProps) {
 
     setHexData(hexagons);
 
-    // Generate points data for hover tooltips
+    // Generate points data for hover tooltips with matching colors
     const points: PointData[] = [];
-    Object.entries(stateCounts).forEach(([state, count]) => {
+    Object.entries(stateCounts).forEach(([state, count], index) => {
       const coords = STATE_COORDINATES[state];
       if (!coords) return;
+      
+      // Use the same unique color as the hex stick
+      const uniqueColor = colorPalette[index % colorPalette.length];
       
       const pointData: PointData = {
         lat: coords.lat,
         lng: coords.lng,
         size: 0.8, // Fixed size for tooltip points
-        color: getColorByCount(count),
+        color: uniqueColor,
         state,
         count,
       };
@@ -227,7 +250,7 @@ export default function Globe3D({ pledges }: Globe3DProps) {
         altitude 
       }, 0);
     }
-  }, [stateCounts, isMobile]);
+  }, [stateCounts, isMobile, colorPalette]);
 
   // Back-and-forth rotation animation focused on India
   useEffect(() => {
@@ -341,21 +364,17 @@ export default function Globe3D({ pledges }: Globe3DProps) {
           const points = d.points || [];
           if (points.length === 0) return '#6ee7b7';
           
-          const count = points[0]?.count || 1;
-          if (count >= 10) return '#059669';
-          if (count >= 5) return '#10b981';
-          if (count >= 2) return '#34d399';
-          return '#6ee7b7';
+          // Use the unique color assigned to this state
+          return points[0]?.color || '#10b981';
         }}
         hexSideColor={(d: any) => {
           const points = d.points || [];
           if (points.length === 0) return '#34d399';
           
-          const count = points[0]?.count || 1;
-          if (count >= 10) return '#047857';
-          if (count >= 5) return '#059669';
-          if (count >= 2) return '#10b981';
-          return '#34d399';
+          // Use a slightly darker version of the unique color for sides
+          const baseColor = points[0]?.color || '#10b981';
+          // Darken the color by reducing brightness (simplified approach)
+          return baseColor + 'dd'; // Add alpha for darker effect
         }}
         hexBinResolution={4}
         hexMargin={0.2}
