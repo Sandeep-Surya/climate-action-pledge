@@ -15,6 +15,12 @@
 
 ---
 
+<p align="center">
+   <img src="public/images/screenshots/Hero.png" alt="Hero Section Screenshot" width="80%" />
+   <br/>
+   <em>Landing hero section with interactive 3D globe</em>
+</p>
+
 ## ✨ Features
 
 <table>
