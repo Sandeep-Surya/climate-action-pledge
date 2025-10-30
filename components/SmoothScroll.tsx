@@ -18,6 +18,23 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
 
     requestAnimationFrame(raf);
 
+    // Handle anchor links
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const href = anchor.getAttribute('href');
+        if (href && href !== '#') {
+          const target = document.querySelector(href);
+          if (target) {
+            lenis.scrollTo(target as HTMLElement, {
+              offset: 0,
+              duration: 1.5,
+            });
+          }
+        }
+      });
+    });
+
     return () => {
       lenis.destroy();
     };

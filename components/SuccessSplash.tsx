@@ -27,14 +27,14 @@ export default function SuccessSplash({ name, onComplete }: SuccessSplashProps) 
           clearInterval(progressInterval);
           return 100;
         }
-        return prev + 3.33; // 100 / 30 frames per second * 3 seconds
+        return prev + 1.67; // 100 / 60 frames per second * 6 seconds
       });
     }, 100);
 
-    // Complete after 3 seconds
+    // Complete after 6 seconds (increased from 3 seconds)
     const timer = setTimeout(() => {
       onComplete();
-    }, 3000);
+    }, 6000);
 
     return () => {
       clearTimeout(timer);

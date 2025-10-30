@@ -3,8 +3,8 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Pledge } from '@/types/pledge';
-import { Award, Download, Share2, Star } from 'lucide-react';
-import { useRef } from 'react';
+import { Award, Download, Share2, Star, X, AlertTriangle } from 'lucide-react';
+import { useRef, useState, useEffect } from 'react';
 
 interface CertificateProps {
   pledge: Pledge;
@@ -13,27 +13,189 @@ interface CertificateProps {
 
 export default function Certificate({ pledge, onClose }: CertificateProps) {
   const certificateRef = useRef<HTMLDivElement>(null);
+  const [showDialog, setShowDialog] = useState(false);
 
-  const handleDownload = () => {
-    // In a real app, you'd use html2canvas or similar
-    alert('Download feature would be implemented with html2canvas or similar library');
-  };
+  // Show dialog when component mounts
+  useEffect(() => {
+    setShowDialog(true);
+  }, []);
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: 'Climate Action Pledge Certificate',
-        text: `I just took the Climate Action Pledge! Join me in making a difference. 🌍`,
-        url: window.location.href,
+  const handleDownload = async () => {
+    try {
+      // Check if certificate element exists
+      if (!certificateRef.current) {
+        throw new Error('Certificate element not found');
+      }
+
+      console.log('Starting certificate download...');
+      
+      // Dynamically import html-to-image only when needed
+      let toPng;
+      try {
+        const module = await import('html-to-image');
+        toPng = module.toPng;
+        console.log('html-to-image loaded successfully');
+      } catch (importError) {
+        console.error('Failed to import html-to-image:', importError);
+        throw new Error('Failed to load certificate generator. Please refresh the page and try again.');
+      }
+      
+      // Add a small delay to ensure the certificate is fully rendered
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      console.log('Capturing certificate...');
+      const dataUrl = await toPng(certificateRef.current, {
+        quality: 1,
+        pixelRatio: 2,
+        backgroundColor: '#ffffff',
       });
-    } else {
-      alert('Share feature not supported on this browser');
+      
+      console.log('Certificate captured, creating download link...');
+      const link = document.createElement('a');
+      link.download = `climate-pledge-certificate-${pledge.id}.png`;
+      link.href = dataUrl;
+      link.click();
+      
+      console.log('Download initiated successfully');
+      setShowDialog(false);
+    } catch (error) {
+      console.error('Error generating certificate:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create certificate image. Please try again or take a screenshot instead.';
+      alert(errorMessage);
     }
   };
 
+  const handleShare = async () => {
+    if (certificateRef.current) {
+      try {
+        // Dynamically import html-to-image
+        let toBlob;
+        try {
+          const module = await import('html-to-image');
+          toBlob = module.toBlob;
+        } catch (importError) {
+          console.error('Failed to import html-to-image:', importError);
+          throw new Error('Failed to load certificate generator');
+        }
+        
+        // Add a small delay to ensure the certificate is fully rendered
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Convert certificate to blob
+        const blob = await toBlob(certificateRef.current, {
+          quality: 1,
+          pixelRatio: 2,
+          backgroundColor: '#ffffff',
+        });
+        
+        if (!blob) {
+          alert('Failed to create certificate image. Please try downloading instead.');
+          return;
+        }
+        
+        const file = new File([blob], 'climate-pledge-certificate.png', { type: 'image/png' });
+        
+        // Check if Web Share API supports files
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              title: 'Climate Action Pledge Certificate',
+              text: `I just took the Climate Action Pledge! Join me in making a difference. 🌍`,
+              files: [file],
+            });
+          } catch (err) {
+            if ((err as Error).name !== 'AbortError') {
+              console.error('Error sharing:', err);
+              alert('Failed to share. Certificate will be downloaded instead.');
+              const link = document.createElement('a');
+              link.download = `climate-pledge-certificate-${pledge.id}.png`;
+              link.href = URL.createObjectURL(blob);
+              link.click();
+            }
+          }
+        } else {
+          // Fallback: Download the image
+          const link = document.createElement('a');
+          link.download = `climate-pledge-certificate-${pledge.id}.png`;
+          link.href = URL.createObjectURL(blob);
+          link.click();
+          alert('Certificate image downloaded! You can share it from your files.');
+        }
+      } catch (error) {
+        console.error('Error creating certificate image:', error);
+        alert('Failed to create certificate image. Please try downloading instead or take a screenshot.');
+      }
+    }
+  };
+
+  const handleCloseDialog = () => {
+    setShowDialog(false);
+  };
+
+  const handleViewPledgeWall = () => {
+    setShowDialog(false);
+    onClose();
+  };
+
   return (
-    <section className="py-16 px-4 bg-gradient-to-b from-green-50 to-white">
-      <div className="max-w-4xl mx-auto">
+    <>
+      {/* Download Dialog */}
+      {showDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative">
+            <button
+              onClick={handleCloseDialog}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+              aria-label="Close dialog"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <div className="flex items-start gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+                <AlertTriangle className="w-5 h-5 text-amber-600" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Download Your Certificate
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Would you like to download your certificate now?
+                </p>
+              </div>
+            </div>
+            
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+              <p className="text-sm text-amber-900 font-medium mb-1">
+                ⚠️ Important Notice
+              </p>
+              <p className="text-xs text-amber-800">
+                This certificate will not be shown again after you close this page. Please download it now to keep a copy for your records.
+              </p>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button
+                onClick={handleDownload}
+                className="flex-1 bg-green-600 hover:bg-green-700 text-white gap-2"
+              >
+                <Download className="w-4 h-4" />
+                Download Now
+              </Button>
+              <Button
+                onClick={handleCloseDialog}
+                variant="outline"
+                className="flex-1"
+              >
+                Skip
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <section className="py-16 px-4 bg-gradient-to-b from-green-50 to-white">
+        <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4">
             <Award className="w-10 h-10 text-green-600" />
@@ -46,11 +208,11 @@ export default function Certificate({ pledge, onClose }: CertificateProps) {
           </p>
         </div>
 
-        {/* Certificate */}
-        <Card
-          ref={certificateRef}
-          className="p-12 bg-gradient-to-br from-white via-green-50 to-blue-50 border-4 border-green-600 shadow-2xl"
-        >
+        {/* Certificate - wrapped in a clean container for html2canvas */}
+        <div ref={certificateRef} className="bg-white p-2 rounded-lg">
+          <Card
+            className="p-12 bg-gradient-to-br from-white via-green-50 to-blue-50 border-4 border-green-600 shadow-2xl"
+          >
           <div className="text-center space-y-6">
             {/* Header */}
             <div className="border-b-2 border-green-600 pb-6">
@@ -112,6 +274,7 @@ export default function Certificate({ pledge, onClose }: CertificateProps) {
             </div>
           </div>
         </Card>
+        </div>
 
         {/* Action Buttons */}
         <div className="flex flex-wrap justify-center gap-4 mt-8">
@@ -131,10 +294,10 @@ export default function Certificate({ pledge, onClose }: CertificateProps) {
             className="gap-2"
           >
             <Share2 className="w-5 h-5" />
-            Share
+            Share Image
           </Button>
           <Button
-            onClick={onClose}
+            onClick={handleViewPledgeWall}
             size="lg"
             className="bg-green-600 hover:bg-green-700"
           >
@@ -148,7 +311,8 @@ export default function Certificate({ pledge, onClose }: CertificateProps) {
             &ldquo;Your commitment today is a gift to tomorrow&apos;s generations.&rdquo;
           </blockquote>
         </div>
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   );
 }

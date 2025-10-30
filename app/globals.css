@@ -6,8 +6,10 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-poppins);
+  --font-accent: var(--font-space-grotesk);
+  --font-display: var(--font-syne);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -44,38 +46,52 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --radius: 1rem;
+  
+  /* Light environmental theme with nature-inspired colors */
+  --background: oklch(0.99 0.01 120); /* Soft off-white with green tint */
+  --foreground: oklch(0.20 0.02 140); /* Deep forest green */
+  
+  --card: oklch(0.98 0.01 130);
+  --card-foreground: oklch(0.25 0.02 140);
+  
+  --popover: oklch(0.99 0.01 120);
+  --popover-foreground: oklch(0.20 0.02 140);
+  
+  /* Primary: Fresh green/teal for environmental theme */
+  --primary: oklch(0.55 0.18 160); /* Vibrant teal-green */
+  --primary-foreground: oklch(0.99 0 0);
+  
+  /* Secondary: Earthy tones */
+  --secondary: oklch(0.92 0.03 110);
+  --secondary-foreground: oklch(0.30 0.02 140);
+  
+  --muted: oklch(0.95 0.01 130);
+  --muted-foreground: oklch(0.50 0.02 140);
+  
+  --accent: oklch(0.75 0.15 150); /* Bright environmental accent */
+  --accent-foreground: oklch(0.99 0 0);
+  
+  --destructive: oklch(0.60 0.22 30);
+  --border: oklch(0.88 0.02 130);
+  --input: oklch(0.95 0.01 130);
+  --ring: oklch(0.55 0.18 160);
+  
+  /* Nature-inspired chart colors */
+  --chart-1: oklch(0.60 0.20 150); /* Green */
+  --chart-2: oklch(0.65 0.18 210); /* Ocean blue */
+  --chart-3: oklch(0.70 0.15 85); /* Golden */
+  --chart-4: oklch(0.55 0.16 180); /* Teal */
+  --chart-5: oklch(0.62 0.12 100); /* Lime */
+  
+  --sidebar: oklch(0.97 0.01 130);
+  --sidebar-foreground: oklch(0.25 0.02 140);
+  --sidebar-primary: oklch(0.55 0.18 160);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.92 0.03 110);
+  --sidebar-accent-foreground: oklch(0.30 0.02 140);
+  --sidebar-border: oklch(0.88 0.02 130);
+  --sidebar-ring: oklch(0.55 0.18 160);
 }
 
 .dark {
@@ -121,24 +137,83 @@
   }
 }
 
-/* Custom animations for Climate Action Pledge */
+/* Modern 2025 Animations & Effects */
+
+/* Text masking effect for headlines */
+.text-mask-gradient {
+  background: linear-gradient(135deg, 
+    oklch(0.60 0.20 150),
+    oklch(0.65 0.18 180),
+    oklch(0.70 0.15 210),
+    oklch(0.60 0.20 150)
+  );
+  background-size: 300% 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-flow 8s ease infinite;
+}
+
+/* Liquid morphing animations */
+@keyframes liquid-morph {
+  0%, 100% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+    transform: rotate(90deg) scale(1.05);
+  }
+  50% {
+    border-radius: 50% 60% 30% 60% / 30% 60% 70% 40%;
+    transform: rotate(180deg) scale(1);
+  }
+  75% {
+    border-radius: 60% 40% 60% 50% / 70% 30% 50% 60%;
+    transform: rotate(270deg) scale(1.05);
+  }
+}
+
+/* Kinetic typography */
+@keyframes text-wave {
+  0%, 100% { transform: translateY(0px); }
+  20% { transform: translateY(-10px); }
+  40% { transform: translateY(0px); }
+}
+
+@keyframes text-glitch {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+}
+
+@keyframes gradient-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px) scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
 @keyframes pulse-slow {
   0%, 100% {
     opacity: 1;
+    transform: scale(1);
   }
   50% {
-    opacity: 0.7;
+    opacity: 0.8;
+    transform: scale(1.02);
   }
 }
 
@@ -153,10 +228,10 @@
 
 @keyframes glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 30px oklch(0.60 0.20 150 / 0.4);
   }
   50% {
-    box-shadow: 0 0 40px rgba(16, 185, 129, 0.6);
+    box-shadow: 0 0 60px oklch(0.60 0.20 150 / 0.7);
   }
 }
 
@@ -165,7 +240,7 @@
     transform: translateY(0px);
   }
   50% {
-    transform: translateY(-20px);
+    transform: translateY(-30px);
   }
 }
 
@@ -178,25 +253,101 @@
   }
 }
 
+@keyframes shine {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes soft-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Utility animation classes */
 .animate-fade-in {
   animation: fadeIn 1s ease-out;
 }
 
 .animate-pulse-slow {
-  animation: pulse-slow 3s ease-in-out infinite;
+  animation: pulse-slow 4s ease-in-out infinite;
 }
 
 .animate-gradient {
-  background-size: 200% 200%;
-  animation: gradient-shift 8s ease infinite;
+  background-size: 300% 300%;
+  animation: gradient-shift 10s ease infinite;
 }
 
 .animate-glow {
-  animation: glow 2s ease-in-out infinite;
+  animation: glow 3s ease-in-out infinite;
 }
 
 .animate-float {
-  animation: float 6s ease-in-out infinite;
+  animation: float 8s ease-in-out infinite;
+}
+
+.animate-liquid {
+  animation: liquid-morph 20s ease-in-out infinite;
+}
+
+.animate-soft-bounce {
+  animation: soft-bounce 2s ease-in-out infinite;
+}
+
+.animate-rotate-slow {
+  animation: rotate-slow 30s linear infinite;
+}
+
+.animate-shine {
+  animation: shine 3s linear infinite;
+}
+
+/* Text effects */
+.text-shimmer {
+  background: linear-gradient(
+    90deg,
+    oklch(0.50 0.02 140),
+    oklch(0.70 0.15 150),
+    oklch(0.50 0.02 140)
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 3s linear infinite;
+}
+
+/* Neo-morphism soft UI */
+.neo-morph {
+  background: oklch(0.97 0.01 130);
+  box-shadow: 
+    12px 12px 24px oklch(0.88 0.02 130),
+    -12px -12px 24px oklch(1 0 0);
+  border-radius: 20px;
+}
+
+.neo-morph-inset {
+  background: oklch(0.97 0.01 130);
+  box-shadow: 
+    inset 8px 8px 16px oklch(0.88 0.02 130),
+    inset -8px -8px 16px oklch(1 0 0);
+  border-radius: 20px;
+}
+
+/* Glass morphism for modern cards */
+.glass-morph {
+  background: oklch(0.99 0.01 120 / 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid oklch(0.99 0.01 120 / 0.2);
+  box-shadow: 0 8px 32px oklch(0.20 0.02 140 / 0.1);
 }
 
 /* Smooth scrolling */
@@ -204,20 +355,36 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Hide scrollbar but keep functionality */
+/* Custom scrollbar for light theme */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.1);
+  background: oklch(0.95 0.01 130);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(16, 185, 129, 0.5);
-  border-radius: 4px;
+  background: oklch(0.60 0.20 150);
+  border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(16, 185, 129, 0.7);
+  background: oklch(0.55 0.22 155);
+}
+
+/* Performance optimizations */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hardware acceleration for animations */
+.animate-float,
+.animate-liquid,
+.animate-gradient,
+.animate-pulse-slow {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }

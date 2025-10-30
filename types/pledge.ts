@@ -5,6 +5,7 @@ export interface Pledge {
   mobile: string;
   state: string;
   profile: string;
+  customProfile?: string;
   commitments: string[];
   rating: number;
   date: string;
@@ -16,6 +17,7 @@ export interface PledgeFormData {
   mobile: string;
   state: string;
   profile: string;
+  customProfile?: string;
   commitments: string[];
   rating: number;
 }
@@ -53,20 +55,42 @@ export const INDIAN_STATES = [
 
 export const PROFILES = [
   "Student",
-  "Professional",
-  "Entrepreneur",
-  "Homemaker",
-  "Retired",
+  "Working Professional",
   "Other",
 ];
 
-export const COMMITMENT_OPTIONS = [
-  "Reduce plastic usage",
-  "Use public transport",
-  "Plant trees",
-  "Save water",
-  "Use renewable energy",
-  "Reduce food waste",
-  "Support local businesses",
-  "Educate others",
+export interface CommitmentTheme {
+  theme: string;
+  commitments: string[];
+}
+
+export const COMMITMENT_THEMES: CommitmentTheme[] = [
+  {
+    theme: "Energy & Resources",
+    commitments: [
+      "Use renewable energy",
+      "Reduce electricity consumption",
+      "Conserve water usage",
+    ],
+  },
+  {
+    theme: "Waste & Consumption",
+    commitments: [
+      "Reduce plastic usage",
+      "Minimize food waste",
+      "Practice recycling",
+    ],
+  },
+  {
+    theme: "Mobility & Community",
+    commitments: [
+      "Use public transport",
+      "Plant trees",
+      "Educate others about climate action",
+    ],
+  },
 ];
+
+export const COMMITMENT_OPTIONS = COMMITMENT_THEMES.flatMap(
+  (theme) => theme.commitments
+);

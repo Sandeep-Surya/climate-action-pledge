@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import HeroSection from '@/components/HeroSection';
 import KPISection from '@/components/KPISectionNew';
-import WhySection from '@/components/WhySectionNew';
+import WhySectionTabbed from '@/components/WhySectionTabbed';
 import SmoothScroll from '@/components/SmoothScroll';
-import PledgeForm from '@/components/PledgeForm';
+import PledgeForm from '@/components/PledgeFormEnhanced';
 import Certificate from '@/components/Certificate';
-import PledgeWall from '@/components/PledgeWall';
+import PledgeWall from '@/components/PledgeWallNew';
 import Footer from '@/components/Footer';
 import SuccessSplash from '@/components/SuccessSplash';
 import { Pledge } from '@/types/pledge';
@@ -20,20 +20,51 @@ export default function Home() {
   const [currentPledge, setCurrentPledge] = useState<Pledge | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadPledges();
-  }, []);
-
   const loadPledges = async () => {
     try {
-      const data = await getPledges();
-      setPledges(data);
+      // Priority 1: Try Google Sheets
+      const sheetData = await getPledges();
+      
+      if (sheetData && sheetData.length > 0) {
+        setPledges(sheetData);
+        setLoading(false);
+        return;
+      }
+      
+      // Priority 2: Fallback to local seed data
+      const response = await fetch('/data/seedPledges.json');
+      if (response.ok) {
+        const seedData = await response.json();
+        setPledges(seedData);
+      } else {
+        setPledges([]);
+      }
     } catch (error) {
-      console.error('Failed to load pledges:', error);
+      // Final fallback: try local seed data
+      try {
+        const response = await fetch('/data/seedPledges.json');
+        if (response.ok) {
+          const seedData = await response.json();
+          setPledges(seedData);
+        }
+      } catch (fallbackError) {
+        setPledges([]);
+      }
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadPledges();
+    
+    // Set up real-time polling every 30 seconds
+    const interval = setInterval(() => {
+      loadPledges();
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handlePledgeSuccess = (pledge: Pledge) => {
     setCurrentPledge(pledge);
@@ -56,7 +87,7 @@ export default function Home() {
 
   return (
     <SmoothScroll>
-      <div className="min-h-screen bg-slate-950">
+      <div className="min-h-screen bg-background">
         {/* Success Splash Screen */}
         {showSplash && currentPledge && (
           <SuccessSplash 
@@ -65,9 +96,10 @@ export default function Home() {
           />
         )}
 
-        <HeroSection />
-        <KPISection currentCount={pledges.length} />
-        <WhySection />
+
+        <HeroSection pledges={pledges} />
+        <KPISection currentCount={pledges.length} pledges={pledges} />
+        <WhySectionTabbed />
         
         {!showCertificate ? (
           <PledgeForm onSuccess={handlePledgeSuccess} />

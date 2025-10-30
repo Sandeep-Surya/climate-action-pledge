@@ -22,6 +22,7 @@ export async function submitPledge(formData: PledgeFormData): Promise<Pledge> {
     mobile: formData.mobile,
     state: formData.state,
     profile: formData.profile,
+    customProfile: formData.customProfile,
     commitments: formData.commitments,
     rating: formData.rating,
     date: new Date().toISOString().split('T')[0],
@@ -32,7 +33,6 @@ export async function submitPledge(formData: PledgeFormData): Promise<Pledge> {
   
   // If Google Sheets fails, fallback to mock data
   if (!addedToSheet) {
-    console.log('Using mock data store as fallback');
     addPledge(pledge);
   }
 

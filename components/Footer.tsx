@@ -4,43 +4,43 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gray-900 text-gray-300 py-12 px-4">
+    <footer className="bg-gradient-to-br from-emerald-50 via-teal-50 to-green-50 text-muted-foreground py-12 px-4 border-t border-primary/10">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <Leaf className="w-8 h-8 text-green-500" />
-              <span className="text-xl font-bold text-white">
+              <Leaf className="w-8 h-8 text-emerald-500" />
+              <span className="font-poppins text-xl font-bold text-foreground">
                 Climate Action Pledge
               </span>
             </div>
-            <p className="text-sm text-gray-400 leading-relaxed">
+            <p className="font-inter text-sm text-muted-foreground leading-relaxed">
               Join thousands of Indians committed to creating a sustainable future through collective climate action.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Quick Links</h4>
+            <h4 className="font-space-grotesk text-foreground font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#hero" className="hover:text-green-400 transition">
+                <a href="#hero" className="font-inter hover:text-primary transition">
                   Home
                 </a>
               </li>
               <li>
-                <a href="#pledge-form" className="hover:text-green-400 transition">
+                <a href="#pledge-form" className="font-inter hover:text-primary transition">
                   Take the Pledge
                 </a>
               </li>
               <li>
-                <a href="#pledge-wall" className="hover:text-green-400 transition">
+                <a href="#pledge-wall" className="font-inter hover:text-primary transition">
                   Pledge Wall
                 </a>
               </li>
               <li>
-                <a href="#about" className="hover:text-green-400 transition">
+                <a href="#about" className="font-inter hover:text-primary transition">
                   About Us
                 </a>
               </li>
@@ -49,11 +49,11 @@ export default function Footer() {
 
           {/* Contact & Social */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Connect With Us</h4>
+            <h4 className="font-space-grotesk text-foreground font-semibold mb-4">Connect With Us</h4>
             <div className="space-y-3">
               <a
                 href="mailto:contact@climateactionpledge.in"
-                className="flex items-center gap-2 text-sm hover:text-green-400 transition"
+                className="font-inter flex items-center gap-2 text-sm hover:text-primary transition"
               >
                 <Mail className="w-4 h-4" />
                 contact@climateactionpledge.in
@@ -61,21 +61,21 @@ export default function Footer() {
               <div className="flex gap-4 pt-2">
                 <a
                   href="#"
-                  className="hover:text-green-400 transition"
+                  className="hover:text-primary transition"
                   aria-label="Twitter"
                 >
                   <Twitter className="w-5 h-5" />
                 </a>
                 <a
                   href="#"
-                  className="hover:text-green-400 transition"
+                  className="hover:text-primary transition"
                   aria-label="LinkedIn"
                 >
                   <Linkedin className="w-5 h-5" />
                 </a>
                 <a
                   href="#"
-                  className="hover:text-green-400 transition"
+                  className="hover:text-primary transition"
                   aria-label="GitHub"
                 >
                   <Github className="w-5 h-5" />
@@ -86,8 +86,8 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-gray-400">
+        <div className="border-t border-primary/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="font-inter text-sm text-muted-foreground">
             © {currentYear} Climate Action Pledge. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm">
@@ -102,7 +102,7 @@ export default function Footer() {
 
         {/* Quote */}
         <div className="mt-8 text-center">
-          <p className="text-sm italic text-gray-500">
+          <p className="font-inter text-sm italic text-muted-foreground">
             &ldquo;Small pledges create big change — one click at a time.&rdquo;
           </p>
         </div>

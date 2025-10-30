@@ -1,15 +1,37 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Poppins, Space_Grotesk, Inter, Syne } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Bold, modern font for hero and main headings
+const poppins = Poppins({
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  variable: "--font-poppins",
   subsets: ["latin"],
+  display: 'swap',
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// Tech-forward font for special headings and accents
+const spaceGrotesk = Space_Grotesk({
+  weight: ['300', '400', '500', '600', '700'],
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
+  display: 'swap',
+});
+
+// Clean, readable font for body text
+const inter = Inter({
+  weight: ['300', '400', '500', '600', '700'],
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: 'swap',
+});
+
+// Artistic font for special effects and hero elements
+const syne = Syne({
+  weight: ['400', '500', '600', '700', '800'],
+  variable: "--font-syne",
+  subsets: ["latin"],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -26,7 +48,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${poppins.variable} ${spaceGrotesk.variable} ${inter.variable} ${syne.variable} antialiased`}
       >
         {children}
       </body>

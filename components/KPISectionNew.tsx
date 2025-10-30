@@ -2,10 +2,12 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { motion, useInView, useSpring, useTransform } from 'framer-motion';
-import { Target, TrendingUp, Award } from 'lucide-react';
+import { Target, TrendingUp, Award, GraduationCap, Briefcase, Users } from 'lucide-react';
+import { Pledge } from '@/types/pledge';
 
 interface KPISectionProps {
   currentCount: number;
+  pledges: Pledge[];
 }
 
 function AnimatedNumber({ value, duration = 2 }: { value: number; duration?: number }) {
@@ -38,9 +40,14 @@ function AnimatedNumber({ value, duration = 2 }: { value: number; duration?: num
   return <div ref={ref}>{displayValue.toLocaleString('en-IN')}</div>;
 }
 
-export default function KPISection({ currentCount }: KPISectionProps) {
+export default function KPISection({ currentCount, pledges }: KPISectionProps) {
   const TARGET = 1000000;
   const progress = (currentCount / TARGET) * 100;
+  
+  // Calculate filtered counts
+  const studentCount = pledges.filter(p => p.profile === 'Student').length;
+  const workingProfessionalCount = pledges.filter(p => p.profile === 'Working Professional').length;
+  const othersCount = pledges.filter(p => p.profile === 'Other').length;
   
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-100px' });
@@ -65,22 +72,26 @@ export default function KPISection({ currentCount }: KPISectionProps) {
       iconColor: 'text-emerald-400',
     },
     {
-      icon: Award,
-      label: 'Progress',
-      value: progress,
-      suffix: '%',
-      color: 'from-violet-500 to-purple-500',
-      bgColor: 'bg-violet-500/10',
-      borderColor: 'border-violet-500/20',
-      iconColor: 'text-violet-400',
+      icon: Users,
+      label: 'Demographics',
+      isMultiValue: true,
+      demographics: {
+        students: studentCount,
+        professionals: workingProfessionalCount,
+        others: othersCount,
+      },
+      color: 'from-purple-500 to-pink-500',
+      bgColor: 'bg-purple-500/10',
+      borderColor: 'border-purple-500/20',
+      iconColor: 'text-purple-400',
     },
   ];
 
   return (
-    <section ref={sectionRef} className="relative py-32 px-4 overflow-hidden bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+    <section ref={sectionRef} className="relative py-32 px-4 overflow-hidden bg-gradient-to-br from-background via-teal-50/20 to-emerald-50/20">
       {/* Animated Background */}
-      <div className="absolute inset-0 opacity-30">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.1)_0%,transparent_50%)]" />
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,oklch(0.60 0.20 150 / 0.15)_0%,transparent_50%)]" />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
@@ -97,22 +108,22 @@ export default function KPISection({ currentCount }: KPISectionProps) {
             animate={isInView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <span className="px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium">
+            <span className="px-6 py-3 rounded-full glass-morph border border-primary/20 text-primary text-sm font-space-grotesk font-semibold">
               Live Statistics
             </span>
           </motion.div>
-          <h2 className="text-5xl md:text-6xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 text-transparent bg-clip-text">
+          <h2 className="font-syne text-5xl md:text-6xl font-black mb-6">
+            <span className="text-mask-gradient">
               Our Impact
             </span>
           </h2>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+          <p className="font-inter text-xl text-muted-foreground max-w-2xl mx-auto">
             Track our collective journey towards a sustainable future
           </p>
         </motion.div>
 
         {/* KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {kpis.map((kpi, index) => (
             <motion.div
               key={kpi.label}
@@ -121,11 +132,11 @@ export default function KPISection({ currentCount }: KPISectionProps) {
               transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
             >
               <motion.div
-                className={`relative group overflow-hidden rounded-3xl ${kpi.bgColor} backdrop-blur-xl border ${kpi.borderColor} p-8 hover:scale-105 transition-all duration-500`}
+                className="relative group overflow-hidden neo-morph p-8 hover:scale-105 transition-all duration-500"
                 whileHover={{ y: -10 }}
               >
                 {/* Gradient Overlay on Hover */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${kpi.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+                <div className={`absolute inset-0 bg-gradient-to-br ${kpi.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
                 
                 {/* Icon */}
                 <motion.div
@@ -140,14 +151,36 @@ export default function KPISection({ currentCount }: KPISectionProps) {
 
                 {/* Value */}
                 <div className="mb-4">
-                  <div className={`text-5xl font-black bg-gradient-to-br ${kpi.color} text-transparent bg-clip-text`}>
-                    <AnimatedNumber value={kpi.value} />
-                    {kpi.suffix && <span className="text-3xl">{kpi.suffix}</span>}
-                  </div>
+                  {kpi.isMultiValue && kpi.demographics ? (
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="font-inter text-sm text-muted-foreground">Students</span>
+                        <span className={`font-poppins text-2xl font-bold bg-gradient-to-br ${kpi.color} text-transparent bg-clip-text`}>
+                          <AnimatedNumber value={kpi.demographics.students} />
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="font-inter text-sm text-muted-foreground">Professionals</span>
+                        <span className={`font-poppins text-2xl font-bold bg-gradient-to-br ${kpi.color} text-transparent bg-clip-text`}>
+                          <AnimatedNumber value={kpi.demographics.professionals} />
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="font-inter text-sm text-muted-foreground">Others</span>
+                        <span className={`font-poppins text-2xl font-bold bg-gradient-to-br ${kpi.color} text-transparent bg-clip-text`}>
+                          <AnimatedNumber value={kpi.demographics.others} />
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className={`text-5xl font-black bg-gradient-to-br ${kpi.color} text-transparent bg-clip-text`}>
+                      <AnimatedNumber value={kpi.value || 0} />
+                    </div>
+                  )}
                 </div>
 
                 {/* Label */}
-                <p className="text-slate-400 font-medium text-lg">{kpi.label}</p>
+                <p className="font-space-grotesk text-foreground text-sm font-semibold mb-2">{kpi.label}</p>
 
                 {/* Decorative Glow */}
                 <div className={`absolute -bottom-10 -right-10 w-40 h-40 bg-gradient-to-br ${kpi.color} rounded-full blur-3xl opacity-20 group-hover:opacity-30 transition-opacity duration-500`} />
@@ -163,16 +196,16 @@ export default function KPISection({ currentCount }: KPISectionProps) {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.5 }}
         >
-          <div className="backdrop-blur-xl bg-slate-900/50 rounded-3xl p-8 border border-slate-800">
+          <div className="glass-morph rounded-3xl p-8 border-2 border-primary/20">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-2xl font-bold text-slate-200">Goal Progress</h3>
-              <span className="text-emerald-400 text-xl font-bold">
+              <h3 className="font-poppins text-2xl font-bold text-foreground">Overall Progress</h3>
+              <span className="font-space-grotesk text-primary text-xl font-bold">
                 {progress.toFixed(2)}%
               </span>
             </div>
             
             {/* Progress Track */}
-            <div className="relative h-6 bg-slate-800 rounded-full overflow-hidden">
+            <div className="relative h-6 neo-morph-inset rounded-full overflow-hidden">
               {/* Shimmer Effect */}
               <motion.div
                 className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
@@ -210,11 +243,11 @@ export default function KPISection({ currentCount }: KPISectionProps) {
 
             {/* Stats Below Progress */}
             <div className="mt-6 flex justify-between text-sm">
-              <span className="text-slate-400">
-                <span className="text-emerald-400 font-bold">{currentCount.toLocaleString('en-IN')}</span> pledges made
+              <span className="font-inter text-muted-foreground">
+                <span className="text-primary font-bold">{currentCount.toLocaleString('en-IN')}</span> pledges made
               </span>
-              <span className="text-slate-400">
-                <span className="text-cyan-400 font-bold">{(TARGET - currentCount).toLocaleString('en-IN')}</span> to go
+              <span className="font-inter text-muted-foreground">
+                <span className="text-teal-600 font-bold">{(TARGET - currentCount).toLocaleString('en-IN')}</span> to go
               </span>
             </div>
           </div>

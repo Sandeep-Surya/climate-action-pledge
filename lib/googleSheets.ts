@@ -7,7 +7,6 @@ const getGoogleSheetsClient = () => {
   const clientEmail = process.env.GOOGLE_SHEETS_CLIENT_EMAIL;
 
   if (!privateKey || !clientEmail) {
-    console.warn('Google Sheets credentials not found, using mock data');
     return null;
   }
 
@@ -54,7 +53,6 @@ export async function addPledgeToSheet(pledge: Pledge): Promise<boolean> {
 
     return true;
   } catch (error) {
-    console.error('Error adding pledge to Google Sheets:', error);
     return false;
   }
 }
@@ -63,8 +61,10 @@ export async function addPledgeToSheet(pledge: Pledge): Promise<boolean> {
 export async function getPledgesFromSheet(): Promise<Pledge[]> {
   try {
     const sheets = getGoogleSheetsClient();
-    if (!sheets) return [];
-
+    if (!sheets) {
+      return [];
+    }
+    
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SHEET_ID,
       range: `${SHEET_NAME}!A:I`,
@@ -76,22 +76,30 @@ export async function getPledgesFromSheet(): Promise<Pledge[]> {
     }
 
     // Skip header row and convert to Pledge objects
-    const pledges: Pledge[] = rows.slice(1).map((row) => ({
-      id: row[0] || '',
-      name: row[1] || '',
-      email: row[2] || '',
-      mobile: row[3] || '',
-      state: row[4] || '',
-      profile: row[5] || '',
-      commitments: row[6] ? row[6].split(', ') : [],
-      rating: parseInt(row[7] || '5'),
-      date: row[8] || new Date().toISOString().split('T')[0],
-    }));
+    const pledges: Pledge[] = rows.slice(1)
+      .map((row, index) => {
+        // Validate that we have the required fields
+        if (!row[0] || !row[1] || !row[4]) {
+          return null;
+        }
+        
+        return {
+          id: row[0] || '',
+          name: row[1] || '',
+          email: row[2] || '',
+          mobile: row[3] || '',
+          state: row[4] || '',
+          profile: row[5] || '',
+          commitments: row[6] ? (typeof row[6] === 'string' ? row[6].split(', ') : []) : [],
+          rating: parseInt(row[7] || '5', 10),
+          date: row[8] || new Date().toISOString().split('T')[0],
+        };
+      })
+      .filter((pledge): pledge is Pledge => pledge !== null);
 
     // Return in reverse order (newest first)
     return pledges.reverse();
   } catch (error) {
-    console.error('Error getting pledges from Google Sheets:', error);
     return [];
   }
 }
@@ -132,7 +140,6 @@ export async function initializeSheet(): Promise<boolean> {
 
     return true;
   } catch (error) {
-    console.error('Error initializing sheet:', error);
     return false;
   }
 }
